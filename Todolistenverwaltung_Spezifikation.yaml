@@ -1,0 +1,296 @@
+openapi: 3.0.1
+info:
+  title: Todo-Listen-Verwaltung
+  description: ""
+  contact:
+    email: lschloemer@sievers-group.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0
+servers:
+- url: http://127.0.0.1:5000/
+tags:
+- name: Listenverwaltung
+paths:
+  /todo-list/{list_id}:
+    get:
+      tags:
+      - Listenverwaltung
+      summary: Liefert alle Einträge einer Todo-Liste zurück.
+      operationId: getList
+      parameters:
+      - name: list_id
+        in: path
+        description: list id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List item returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoEntry'
+        "404":
+          description: Invalid list ID
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: List with the ID {list_id} does not exist.
+        "500":
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal Server Error.
+    delete:
+      tags:
+      - Listenverwaltung
+      summary: Löscht eine komplette Todo-Liste mit allen Einträgen.
+      operationId: deleteList
+      parameters:
+      - name: list_id
+        in: path
+        description: list id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: List was deleted
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: List deleted.
+        "404":
+          description: Invalid list ID
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: List with the ID {list_id} does not exist.
+        "500":
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal Server Error.
+    post:
+      tags:
+      - Listenverwaltung
+      summary: Fügt einen Eintrag zu einer bestehenden Todo-Liste hinzu.
+      operationId: addEntry
+      requestBody:
+        description: list object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoEntry'
+        required: true
+      parameters:
+      - name: list_id
+        in: path
+        description: list id
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: List item returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoEntry'
+        "404":
+          description: Invalid list ID
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: List with the ID {list_id} does not exist.
+        "500":
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal Server Error.
+  /todo-list:
+    post:
+      tags:
+      - Listenverwaltung
+      summary: Fügt eine neue Todo-Liste hinzu.
+      operationId: addList
+      requestBody:
+        description: list object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoList'
+        required: true
+      responses:
+        "201":
+          description: List added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoList'
+        "406":
+          description: Invalid list body
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Request contains faulty Data.
+        "500":
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal Server Error.
+#    
+#    get:
+#      tags:
+#      - Listenverwaltung
+#      summary: Liefert alle Todo-Listen zurück.
+#      responses:
+#        "200":
+#          description: Lists returned
+#          content:
+#            application/json:
+#              schema:
+#                type: string
+#        "500":
+#          description: Server Error
+#          content:
+#            text/plain:
+#              schema:
+#                type: string
+#                example: Internal Server Error.
+#    
+  /entry/{entry_id}:
+    patch:
+      tags:
+      - Eintragsverwaltung
+      summary: Aktualisiert einen bestehenden Eintrag.
+      operationId: updateEntry
+      requestBody:
+        description: entry object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoEntryUpdate'
+        required: true
+      parameters:
+      - name: entry_id
+        in: path
+        description: entry id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Entry item returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoEntry'
+        "404":
+          description: Invalid entry id
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Entry with the ID {entry_id} does not exist.
+        "406":
+          description: Invalid entry body
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Request contains faulty Data.
+        "500":
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal Server Error.
+
+    delete:
+      tags:
+      - Eintragsverwaltung
+      summary: Löscht einen einzelnen Eintrag einer Todo-Liste.
+      operationId: deleteEntry
+      parameters:
+      - name: entry_id
+        in: path
+        description: entry id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Entry was deleted
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Entry deleted.
+        "404":
+          description: Invalid entry id
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Entry with the ID {entry_id} does not exist.
+        "500":
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal Server Error.
+components:
+  schemas:
+    TodoList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    TodoEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        list_id:
+          type: string
+          format: uuid
+    TodoEntryUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
