@@ -9,31 +9,6 @@ from flask import Flask, request, jsonify, abort
 # initialize Flask server
 app = Flask(__name__)
 
-# Test Daten
-"""
-# create unique id for lists, entries
-todo_list_1_id = '1318d3d1-d979-47e1-a225-dab1751dbe75'
-todo_list_2_id = '3062dc25-6b80-4315-bb1d-a7c86b014c65'
-todo_list_3_id = '44b02e00-03bc-451d-8d01-0c67ea866fee'
-todo_1_id = uuid.uuid4()
-todo_2_id = uuid.uuid4()
-todo_3_id = uuid.uuid4()
-todo_4_id = '1318d3d1-d979-47e1-a225-dab1751dbe77'
-
-# define internal data structures with example data
-todo_lists = [
-    {'id': todo_list_1_id, 'name': 'Einkaufsliste'},
-    {'id': todo_list_2_id, 'name': 'Arbeit'},
-    {'id': todo_list_3_id, 'name': 'Privat'},
-]
-todos = [
-    {'id': todo_1_id, 'name': 'Milch', 'description': '', 'list': todo_list_1_id},
-    {'id': todo_2_id, 'name': 'Arbeitsblätter ausdrucken', 'description': '', 'list': todo_list_2_id},
-    {'id': todo_3_id, 'name': 'Kinokarten kaufen', 'description': '', 'list': todo_list_3_id},
-    {'id': todo_4_id, 'name': 'Eier', 'description': '', 'list': todo_list_1_id},
-]
-"""
-
 todo_lists = {}
 todos = {}
 
@@ -88,14 +63,6 @@ def add_new_list():
     new_todoList = {'id': str(uuid.uuid4()), 'name': new_list['name']}
     todo_lists.append(new_todoList)
     return jsonify(new_todoList), 201
-
-"""
-# define endpoint for getting all lists
-@app.route('/todo-list', methods=['GET'])
-def get_all_lists():
-    print('Returning all todo lists...')
-    return jsonify(todo_lists)
-"""
 
 @app.route('/entry/<entry_id>', methods=['PATCH', 'DELETE'])
 def handle_entry(entry_id):
